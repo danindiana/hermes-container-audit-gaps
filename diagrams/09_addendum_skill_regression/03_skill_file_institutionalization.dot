@@ -1,0 +1,24 @@
+digraph SkillInstitutionalization {
+  rankdir=TB;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Why this matters more than a one-off report";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontname="Helvetica"];
+
+  onereport [fillcolor="#152a3a", color="#39d0ff", label="A single overclaimed report\n(the original finding)"];
+  reviewed [fillcolor="#0f2a20", color="#39ffb0", label="Reviewed, gaps identified,\npublished as this repo"];
+  followup [fillcolor="#1a1f26", color="#556070", label="Follow-up work\n(security_patterns_81510/)"];
+  skillfile [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+             label="Flawed reasoning written into\n~/.hermes/skills/security/\nnetwork-security/SKILL.md v1.1.0"];
+  future [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+          label="Every FUTURE audit using this\nskill inherits the same\nN/A-means-safe fallacy"];
+  fix [fillcolor="#0f2a20", color="#39ffb0", penwidth=2.5,
+       label="Fix belongs in SKILL.md itself,\nnot another report layered on top"];
+
+  onereport -> reviewed -> followup -> skillfile -> future;
+  future -> fix [style=dashed, color="#39ffb0", label="recommended"];
+}

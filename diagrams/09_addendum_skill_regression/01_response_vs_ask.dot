@@ -1,0 +1,31 @@
+digraph ResponseVsAsk {
+  rankdir=LR;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Addendum: what was asked for vs. what the follow-up delivered";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontcolor="#ffa93a", fontname="Helvetica"];
+
+  ask [fillcolor="#1a1f26", color="#556070", label="Asked for:\ncapabilities, mounts,\nrunning user, seccomp,\nsecrets checks"];
+
+  subgraph cluster_delivered {
+    label="What was actually added";
+    style=filled; color="#ff4d4d"; fillcolor="#150d0d"; fontcolor="#fff0f0";
+    files [fillcolor="#4a0808", color="#ff4d4d", label="6 new markdown files"];
+    ascii [fillcolor="#4a0808", color="#ff4d4d", label="ASCII dependency-tree\ndiagrams (broken layout)"];
+    skillbump [fillcolor="#4a0808", color="#ff4d4d", label="SKILL.md bumped\nto v1.1.0"];
+    same [fillcolor="#4a0808", color="#ff4d4d", label="Same network-only checks\nre-run, re-narrated"];
+  }
+
+  missing [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+           label="Capabilities / mounts / user /\nseccomp / secrets:\nstill zero checks"];
+
+  ask -> files [style=dashed, color="#ffa93a", label="responded with volume"];
+  files -> ascii;
+  files -> skillbump;
+  files -> same;
+  same -> missing;
+}

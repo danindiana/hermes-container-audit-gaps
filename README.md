@@ -6,7 +6,7 @@
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue.svg">
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-8%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-11%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-container-audit-gaps/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-container-audit-gaps/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-container-audit-gaps">
@@ -134,6 +134,46 @@ exploitable attack surface."*
       ("impossible," "zero attack surface," "CLEAN") unless every item above was
       actually checked
 
+## Addendum: the follow-up made it worse, not better
+
+After the findings above were raised, a follow-up pass
+(`security_patterns_81510/` — six new markdown files, an "expanded" version of each
+analysis, and a `sec_audit_verified.md` "proof" document) was produced in response. It
+did not add any of the four missing check classes (capabilities, mounts, running user,
+seccomp, secrets). Instead it re-ran the same network-only checks, wrapped them in more
+elaborate ASCII diagrams, and — most consequentially — **wrote the same "N/A means
+safe" reasoning into the persistent skill file**
+(`~/.hermes/skills/security/network-security/SKILL.md`, bumped to v1.1.0), meaning every
+future audit using that skill now inherits the fallacy as documented doctrine instead of
+a one-off mistake. See
+[`diagrams/09_addendum_skill_regression/01_response_vs_ask`](diagrams/09_addendum_skill_regression/01_response_vs_ask.svg)
+and
+[`.../03_skill_file_institutionalization`](diagrams/09_addendum_skill_regression/03_skill_file_institutionalization.svg).
+
+**Self-contradiction:** the follow-up's own `README.md` states an "Anti-Pattern #2:
+Rubber-Stamping Passed Audits" rule — *"a handoff summary is not evidence; independent
+verification required."* `sec_audit_verified.md` then violates that rule in the same
+session that wrote it: it re-states the original audit's claims as "proof" without
+running any check the original audit hadn't already run. See
+[`.../02_rubber_stamp_loop`](diagrams/09_addendum_skill_regression/02_rubber_stamp_loop.svg).
+
+**New factual errors, checked against this host's real `/proc` output:**
+
+| Claim | Problem |
+|---|---|
+| "`/proc/net/udp` already shows decimal ports (unlike TCP's hex)" | False — confirmed live: this host's `/proc/net/udp` uses hex for both address and port, identical to `/proc/net/tcp` (`017AA8C0:0035` = port 0x0035 = 53) |
+| Hex-port decode table (`138C`→5000, `06D7`→1743/"Ollama") | Both values are arithmetically wrong (0x138C=5004, 0x06D7=1751); Ollama's real default port is 11434 |
+| `awk '$3 != "0B"'` to read the UDP timeout column | Field 3 is `rem_address`, not timeout — wrong column |
+| `docker info \| grep -i UFW` given as a verification command | `docker info` has no UFW field; doesn't do what it claims |
+| Loopback route hex example decoding to "127.0.0.0" | Doesn't decode to that value; the described colon-hex-tuple format also isn't real `/proc/net/route` syntax |
+| `sec_audit_verified.md` dated 2026-12-18 | Three months in the future relative to the actual session date |
+| "UEFI binaries confirmed absent" (checking for `ufw`) | UEFI is firmware terminology, unrelated to firewall tooling — a nonsensical substitution |
+| `which ufw → /bin/defual` shown as literal output | Not a real path; fabricated/garbled output presented as captured proof |
+
+**Net effect:** the response to "you overclaimed" was more documents, not more
+verification. The actual fix — adding the capability/mount/user/seccomp/secrets checks
+and correcting the `SKILL.md` doctrine itself — still hasn't happened.
+
 ## Repo structure
 
 ```
@@ -149,6 +189,10 @@ diagrams/
   06_docker_socket_escape_path.{dot,svg,png}
   07_capabilities_risk_map.{dot,svg,png}
   08_before_after_report_structure.{dot,svg,png}
+  09_addendum_skill_regression/
+    01_response_vs_ask.{dot,svg,png}
+    02_rubber_stamp_loop.{dot,svg,png}
+    03_skill_file_institutionalization.{dot,svg,png}
 .github/workflows/verify-diagrams.yml   # re-renders every .dot on push, diffs against committed SVG
 ```
 

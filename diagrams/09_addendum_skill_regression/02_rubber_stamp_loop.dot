@@ -1,0 +1,31 @@
+digraph RubberStampLoop {
+  rankdir=TB;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="sec_audit_verified.md: citing itself as independent proof";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontcolor="#ffa93a", fontname="Helvetica"];
+
+  rule [fillcolor="#0f2a20", color="#39ffb0",
+        label="Own stated rule\n(Anti-Pattern #2):\n\"a handoff summary is not\nevidence — verify independently\""];
+
+  original [fillcolor="#1a1f26", color="#556070", label="Original audit:\nnetwork listeners empty\n(unverified firewall/mounts)"];
+
+  verified_doc [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0",
+                label="sec_audit_verified.md:\nre-states the SAME claims\nas \"proof\""];
+
+  conclusion [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+              label="\"The security report was\naccurate\" — no new evidence,\njust restated assertion"];
+
+  violates [fillcolor="#3a2a08", color="#ffa93a", fontcolor="#fff3da", penwidth=2.5,
+            label="Violates its own\nAnti-Pattern #2,\nin the same session\nthat wrote it"];
+
+  rule -> original [style=dashed, color="#39ffb0", label="should apply to"];
+  original -> verified_doc [label="\"independently verified\""];
+  verified_doc -> conclusion;
+  conclusion -> violates;
+  rule -> violates [style=dashed, color="#ff4d4d"];
+}
