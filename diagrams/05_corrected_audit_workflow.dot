@@ -1,0 +1,25 @@
+digraph CorrectedWorkflow {
+  rankdir=TB;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Proposed corrected audit workflow";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontname="Helvetica"];
+
+  start [fillcolor="#1a1f26", color="#556070", label="Start audit"];
+  net [fillcolor="#0f2a20", color="#39ffb0", label="1. Network listeners\n(/proc/net/*, all namespaces)"];
+  caps [fillcolor="#0f2a20", color="#39ffb0", label="2. Capabilities\n(/proc/self/status: CapEff/CapBnd)"];
+  mounts [fillcolor="#0f2a20", color="#39ffb0", label="3. Mounts\n(/proc/self/mountinfo, docker inspect)"];
+  user [fillcolor="#0f2a20", color="#39ffb0", label="4. Running user\n(id, /proc/self/status Uid)"];
+  secc [fillcolor="#0f2a20", color="#39ffb0", label="5. seccomp/AppArmor\n(/proc/self/status Seccomp)"];
+  secrets [fillcolor="#0f2a20", color="#39ffb0", label="6. Env var scan\n(scrubbed for secrets)"];
+  scope [fillcolor="#152a3a", color="#39d0ff", shape=diamond,
+         label="Every finding scoped:\nstate what vantage point\nit was observed from"];
+  verdict [fillcolor="#0f2a20", color="#39ffb0", penwidth=2.5,
+           label="Verdict: bounded claims only\n(\"no listeners found from X\"),\nnever \"zero attack surface\""];
+
+  start -> net -> caps -> mounts -> user -> secc -> secrets -> scope -> verdict;
+}

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 640 200">
+  <defs>
+    <radialGradient id="gap" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#ffa93a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffa93a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#39ffb0"/>
+      <stop offset="100%" stop-color="#39d0ff"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="640" height="200" fill="#0a0e12"/>
+
+  <g transform="translate(100,100)">
+    <circle r="70" fill="url(#gap)"/>
+    <!-- a shield with a visible gap in the ring: the audit's blind spot -->
+    <circle r="46" fill="none" stroke="url(#ring)" stroke-width="6"
+            stroke-dasharray="18 8" transform="rotate(-10)" filter="url(#glow)"/>
+    <path d="M0,-24 L20,-14 L20,10 Q20,30 0,40 Q-20,30 -20,10 L-20,-14 Z"
+          fill="none" stroke="#39ffb0" stroke-width="3" opacity="0.6"/>
+    <path d="M-8,-2 L8,-2 M-8,-2 L-8,14 M8,-2 L8,14" stroke="#ff4d4d" stroke-width="3"
+          fill="none" filter="url(#glow)"/>
+  </g>
+
+  <text x="190" y="90" font-family="Helvetica, Arial, sans-serif" font-size="38"
+        font-weight="700" fill="#dfe6ee">hermes-container</text>
+  <text x="190" y="140" font-family="Helvetica, Arial, sans-serif" font-size="38"
+        font-weight="700" fill="#39ffb0">audit-gaps</text>
+  <text x="192" y="168" font-family="Helvetica, Arial, sans-serif" font-size="15"
+        fill="#8a97a6">when "N/A" quietly becomes "safe"</text>
+</svg>

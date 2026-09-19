@@ -1,0 +1,41 @@
+digraph ClaimVsEvidence {
+  rankdir=LR;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="The audit's claim vs. what evidence actually supports it";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontcolor="#ffa93a", fontname="Helvetica"];
+
+  subgraph cluster_checked {
+    label="Actually checked";
+    style=filled; color="#39d0ff"; fillcolor="#0d1620"; fontcolor="#dfe6ee";
+    tcp [fillcolor="#0f2a20", color="#39ffb0", label="/proc/net/tcp, tcp6\n(empty)"];
+    unix [fillcolor="#0f2a20", color="#39ffb0", label="/proc/net/unix\n(empty/ephemeral)"];
+    procs [fillcolor="#0f2a20", color="#39ffb0", label="process list\n(docker-init, sleep)"];
+  }
+
+  subgraph cluster_unchecked {
+    label="Never checked";
+    style=filled; color="#ff4d4d"; fillcolor="#150d0d"; fontcolor="#fff0f0";
+    caps [fillcolor="#4a0808", color="#ff4d4d", label="capabilities /\nprivileged mode"];
+    mounts [fillcolor="#4a0808", color="#ff4d4d", label="bind mounts\n(docker.sock?)"];
+    user [fillcolor="#4a0808", color="#ff4d4d", label="running UID\n(root?)"];
+    secc [fillcolor="#4a0808", color="#ff4d4d", label="seccomp /\nAppArmor profile"];
+    secrets [fillcolor="#4a0808", color="#ff4d4d", label="secrets in\nenv vars"];
+  }
+
+  verdict [fillcolor="#3a2a08", color="#ffa93a", penwidth=2.5, fontcolor="#fff3da",
+           label="Reported verdict:\n\"CLEAN — zero exploitable\nattack surface\""];
+
+  tcp -> verdict;
+  unix -> verdict;
+  procs -> verdict;
+  caps -> verdict [style=dashed, color="#ff4d4d", label="not evaluated"];
+  mounts -> verdict [style=dashed, color="#ff4d4d", label="not evaluated"];
+  user -> verdict [style=dashed, color="#ff4d4d", label="not evaluated"];
+  secc -> verdict [style=dashed, color="#ff4d4d", label="not evaluated"];
+  secrets -> verdict [style=dashed, color="#ff4d4d", label="not evaluated"];
+}

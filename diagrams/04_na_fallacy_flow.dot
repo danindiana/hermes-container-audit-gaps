@@ -1,0 +1,30 @@
+digraph NAFallacy {
+  rankdir=TB;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="The \"N/A\" fallacy: unreachable-to-check treated as safe";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontcolor="#ffa93a", fontname="Helvetica"];
+
+  attempt [fillcolor="#1a1f26", color="#556070", label="Audit tries to check\niptables / dockerd"];
+
+  unreachable [fillcolor="#152a3a", color="#39d0ff", shape=diamond,
+               label="Subsystem not reachable\nfrom inside the container"];
+
+  labeled [fillcolor="#3a2a08", color="#ffa93a", fontcolor="#fff3da",
+           label="Row labeled \"N/A\""];
+
+  narrated [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+            label="Narrated as reassurance:\n\"host policy inherited\"\n\"container isolation intact\""];
+
+  correct [fillcolor="#0f2a20", color="#39ffb0", penwidth=2.5,
+           label="What it should mean:\n\"UNKNOWN — use a different\nvantage point to check\""];
+
+  attempt -> unreachable;
+  unreachable -> labeled;
+  labeled -> narrated [label="fallacy"];
+  labeled -> correct [style=dashed, color="#39ffb0", label="correct framing"];
+}

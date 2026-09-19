@@ -1,0 +1,28 @@
+digraph CapabilitiesRiskMap {
+  rankdir=TB;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Capabilities / privileged-mode risk map (none of this touches the network stack)";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontname="Helvetica"];
+
+  priv [fillcolor="#152a3a", color="#39d0ff", shape=diamond, label="--privileged ?"];
+  yes [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+       label="YES: full device access,\nno seccomp, near-equivalent\nto host root"];
+  no [fillcolor="#152a3a", color="#39d0ff", shape=diamond, label="Which capabilities\nare in CapEff?"];
+  sysadmin [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", label="CAP_SYS_ADMIN:\nmount, many escapes"];
+  setuid [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", label="CAP_SETUID/GID:\nprivilege manipulation"];
+  ptrace [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", label="CAP_SYS_PTRACE:\ninspect/inject other procs"];
+  dropped [fillcolor="#0f2a20", color="#39ffb0", penwidth=2.5,
+           label="ALL dropped, non-root user,\nno-new-privileges:\nactually hardened"];
+
+  priv -> yes [label="worst case"];
+  priv -> no [label="checked further"];
+  no -> sysadmin;
+  no -> setuid;
+  no -> ptrace;
+  no -> dropped [label="best case"];
+}

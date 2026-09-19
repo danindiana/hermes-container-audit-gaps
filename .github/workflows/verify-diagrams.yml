@@ -1,0 +1,37 @@
+name: verify-diagrams
+
+on:
+  push:
+    paths:
+      - "diagrams/**"
+  pull_request:
+    paths:
+      - "diagrams/**"
+
+jobs:
+  render-and-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      - name: Re-render every .dot and diff against the committed SVG
+        run: |
+          set -e
+          shopt -s globstar
+          fail=0
+          for dotfile in diagrams/**/*.dot; do
+            base="${dotfile%.dot}"
+            tmpsvg="$(mktemp --suffix=.svg)"
+            tmppng="$(mktemp --suffix=.png)"
+            dot -Tsvg "$dotfile" -o "$tmpsvg"
+            if ! diff -q "$tmpsvg" "${base}.svg" > /dev/null; then
+              echo "::error file=${dotfile}::rendered SVG does not match committed ${base}.svg — re-render and commit"
+              fail=1
+            fi
+            # PNG is not byte-stable across Graphviz builds; smoke-test only.
+            dot -Tpng "$dotfile" -o "$tmppng"
+          done
+          exit $fail

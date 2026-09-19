@@ -1,0 +1,26 @@
+digraph DockerSocketEscape {
+  rankdir=LR;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Illustrative: a mounted docker.sock bypasses network-only audits entirely";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontcolor="#ffa93a", fontname="Helvetica"];
+
+  container [fillcolor="#1a1f26", color="#556070", label="Container process\n(no listening ports)"];
+  sock [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0",
+        label="/var/run/docker.sock\nbind-mounted in"];
+  api [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0",
+       label="Talks to host Docker API\nover a Unix socket\n(no TCP/UDP involved)"];
+  newctr [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0",
+          label="Can create a new privileged\ncontainer mounting host \"/\""];
+  hostfs [fillcolor="#4a0808", color="#ff4d4d", fontcolor="#fff0f0", penwidth=2.5,
+          label="Full host filesystem access"];
+  invisible [fillcolor="#3a2a08", color="#ffa93a", fontcolor="#fff3da", penwidth=2.5,
+             label="A network-listener audit\nnever sees any of this"];
+
+  container -> sock -> api -> newctr -> hostfs;
+  sock -> invisible [style=dashed, color="#ffa93a"];
+}

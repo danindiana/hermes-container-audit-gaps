@@ -1,0 +1,31 @@
+digraph BeforeAfter {
+  rankdir=LR;
+  bgcolor="#0a0e12";
+  fontname="Helvetica";
+  fontcolor="#dfe6ee";
+  label="Report structure: overclaimed vs. rigorous";
+  labelloc="t";
+  fontsize=20;
+  node [style=filled, fontname="Helvetica", fontcolor="#dfe6ee", shape=box, penwidth=1.5];
+  edge [color="#556070", fontname="Helvetica"];
+
+  subgraph cluster_before {
+    label="Before (reviewed report)";
+    style=filled; color="#ff4d4d"; fillcolor="#150d0d"; fontcolor="#fff0f0";
+    b1 [fillcolor="#4a0808", color="#ff4d4d", label="Checks: network only"];
+    b2 [fillcolor="#4a0808", color="#ff4d4d", label="N/A rows narrated as safe"];
+    b3 [fillcolor="#4a0808", color="#ff4d4d", label="Verdict: absolute\n(\"zero attack surface\")"];
+    b1 -> b2 -> b3;
+  }
+
+  subgraph cluster_after {
+    label="After (proposed)";
+    style=filled; color="#39ffb0"; fillcolor="#0f2a20"; fontcolor="#dfe6ee";
+    a1 [fillcolor="#0f2a20", color="#39ffb0", label="Checks: network + caps +\nmounts + user + seccomp + secrets"];
+    a2 [fillcolor="#0f2a20", color="#39ffb0", label="Unreachable checks\nmarked UNKNOWN"];
+    a3 [fillcolor="#0f2a20", color="#39ffb0", label="Verdict: scoped\n(\"no listeners found\ngiven what was checked\")"];
+    a1 -> a2 -> a3;
+  }
+
+  b3 -> a1 [style=dashed, color="#ffa93a", label="revision"];
+}
